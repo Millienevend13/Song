@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>99 Days with You</title>
+    <style>
+        :root {
+            --primary-text: #4a5a6a;
+            --accent-pink: #ff8a80;
+            --soft-blue: #e0f7fa;
+            --soft-yellow: #fff9c4;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--soft-blue) 0%, var(--soft-yellow) 100%);
+            font-family: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--primary-text);
+            touch-action: manipulation;
+        }
+
+        /* 顶部标题 */
+        .header-text {
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            font-weight: 300;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* 唱片组件 */
+        .vinyl-wrapper {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 20px;
+        }
+
+        .vinyl {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #333 0%, #111 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+            animation: rotate 15s linear infinite;
+            animation-play-state: paused;
+            border: 2px solid #222;
+        }
+
+        .vinyl.playing {
+            animation-play-state: running;
+        }
+
+        /* 模拟黑胶纹理 */
+        .vinyl::after {
+            content: "";
+            position: absolute;
+            width: 94%;
+            height: 94%;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cover-art {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-image: url('cover.jpg'); /* 请确保文件夹内有此文件 */
+            background-size: cover;
+            background-position: center;
+            border: 5px solid #000;
+            z-index: 2;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 歌词容器 - 手动滑动版 */
+        .lyrics-container {
+            width: 85%;
+            height: 220px;
+            overflow-y: scroll;
+            text-align: center;
+            mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 25%, black 75%, transparent);
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .lyrics-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        #lyrics-content {
+            padding: 100px 0; /* 留白让最后一句能滑到中间 */
+        }
+
+        .lyric-line {
+            opacity: 0.7;
+            margin: 20px 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            transition: all 0.3s;
+            font-weight: 300;
+        }
+
+        /* 播放控制 */
+        .player-controls {
+            margin: 30px 0;
+        }
+
+        #play-button {
+            background: #fff;
+            border: none;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            transition: transform 0.2s;
+        }
+
+        #play-button:active {
+            transform: scale(0.9);
+        }
+
+        .play-icon {
+            fill: var(--primary-text);
+            width: 25px;
+            height: 25px;
+        }
+
+        /* 底部纪念文字 */
+        .footer-text {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-text">99 Days Together</div>
+
+    <div class="vinyl-wrapper">
+        <div class="vinyl" id="vinyl">
+            <div class="cover-art"></div>
+        </div>
+    </div>
+
+    <div class="lyrics-container">
+        <div id="lyrics-content">
+            </div>
+    </div>
+
+    <div class="player-controls">
+        <button id="play-button">
+            <svg class="play-icon" id="icon" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="footer-text">Polar Bear & Penguin</div>
+
+    <audio id="audio" src="music.mp3" loop></audio>
+
+    <script>
+        const lyricsData = [
+            "I packed a suitcase of northern stars",
+            "To meet you where the summer starts",
+            "A fluffy white bear in a sailor’s coat",
+            "Drifting south on a tiny boat",
+            "The ocean is singing a song I know",
+            "Leading me down to the world below",
+            "",
+            "Finally, the Penguin meets the Polar Bear",
+            "Salt in the breeze and gold in your hair",
+            "We’re dancing slow on a floating park",
+            "Two soft shadows in the velvet dark",
+            "No more ice, just the warmth we share",
+            "The Penguin and his Polar Bear",
+            "",
+            "The stars are leaning in to see",
+            "How cozy two small hearts can be",
+            "From the North to the South, we’ve drawn a line",
+            "To a place where the sun and the moon align",
+            "Wrapped in fur, we’re a world of our own",
+            "The sweetest home I’ve ever known",
+            "",
+            "Finally, the Penguin meets the Polar Bear",
+            "Salt in the breeze and gold in your hair",
+            "We’re dancing slow on a floating park",
+            "Two soft shadows in the velvet dark",
+            "No more ice, just the warmth we share",
+            "The Penguin and his Polar Bear",
+            "",
+            "Just stay here...",
+            "My little penguin...",
+            "My big white bear..."
+        ];
+
+        const lyricsContent = document.getElementById('lyrics-content');
+        const audio = document.getElementById('audio');
+        const vinyl = document.getElementById('vinyl');
+        const playBtn = document.getElementById('play-button');
+        const icon = document.getElementById('icon');
+
+        // 渲染歌词
+        lyricsData.forEach((text) => {
+            const line = document.createElement('div');
+            line.className = 'lyric-line';
+            line.textContent = text || "•";
+            lyricsContent.appendChild(line);
+        });
+
+        // 播放控制逻辑
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                vinyl.classList.add('playing');
+                // 切换为暂停图标
+                icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+            } else {
+                audio.pause();
+                vinyl.classList.remove('playing');
+                // 切换为播放图标
+                icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            }
+        });
+    </script>
+</body>
+</html>
